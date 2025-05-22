@@ -13,13 +13,16 @@ const terminalContainer = document.getElementById('terminal-container');
 let commandHistory = [];
 let historyIndex = -1;
 
+const COMMANDS = ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear'];
+const FILES = ['challenge.txt', 'three', 'five', 'four'];
+
 function createLine(prompt = '$', inputValue = '', isInput = true) {
     const line = document.createElement('div');
     line.className = 'terminal-line';
 
     const promptSpan = document.createElement('span');
     promptSpan.className = 'terminal-prompt';
-    promptSpan.textContent = prompt;
+    promptSpan.textContent = isInput ? prompt : '';
     line.appendChild(promptSpan);
 
     if (isInput) {
@@ -61,6 +64,32 @@ function handleHistory(e) {
             input.value = '';
         }
         e.preventDefault();
+    } else if (e.key === 'Tab') {
+        e.preventDefault();
+        handleTabCompletion(input);
+    }
+}
+
+function handleTabCompletion(input) {
+    const value = input.value;
+    const parts = value.split(/\s+/);
+    // Complete command
+    if (parts.length === 1) {
+        const matches = COMMANDS.filter(cmd => cmd.startsWith(parts[0]));
+        if (matches.length === 1) {
+            input.value = matches[0] + ' ';
+        } else if (matches.length > 1) {
+            createLine('$', matches.join('    '), false);
+        }
+    } else if (parts.length > 1) {
+        // Complete file name for commands that take files
+        const last = parts[parts.length - 1];
+        const matches = FILES.filter(f => f.startsWith(last));
+        if (matches.length === 1) {
+            input.value = parts.slice(0, -1).join(' ') + ' ' + matches[0];
+        } else if (matches.length > 1) {
+            createLine('$', matches.join('    '), false);
+        }
     }
 }
 
@@ -165,9 +194,9 @@ function processCommand(cmd) {
             }
         }
     }
-    // Simulate infinite water stream
+    // Simulate finite water stream
     if (/^pour\s+water$/.test(cmd)) {
-        output = 'W'.repeat(10000) + '\n[streaming... Press Ctrl+Z to stop]';
+        output = 'W'.repeat(10000);
         createLine('$', output, false);
         createLine();
         return;

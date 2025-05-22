@@ -1,19 +1,19 @@
 body {
-    background: #181818;
-    color: #e0e0e0;
+    background: #10121a;
+    color: #e0e6f0;
     font-family: 'Fira Mono', 'Consolas', monospace;
     margin: 0;
     height: 100vh;
 }
 
 #terminal-container {
-    background: #222;
-    border-radius: 8px;
-    box-shadow: 0 0 16px #000a;
+    background: #181a24;
+    border-radius: 10px;
+    box-shadow: 0 0 24px #000c;
     width: 80vw;
     max-width: 900px;
     margin: 40px auto;
-    padding: 24px;
+    padding: 28px;
     min-height: 60vh;
     overflow-y: auto;
     font-size: 1.1em;
@@ -25,8 +25,10 @@ body {
 }
 
 .terminal-prompt {
-    color: #6af;
+    color: #7fd1ff;
     margin-right: 8px;
+    font-weight: bold;
+    text-shadow: 0 0 4px #1e90ff44;
 }
 
 .terminal-input {
@@ -39,7 +41,10 @@ body {
 }
 
 .terminal-output {
-    color: #b5e853;
+    color: #aeb6c3;
     margin-left: 1.5em;
+    margin-right: 1.5em;
     white-space: pre-wrap;
+    word-break: break-all;
+    text-shadow: 0 0 2px #000a;
 }

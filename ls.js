@@ -1,3 +1,3 @@
-export function ls() {
-    return 'challenge.txt  three  five';
+export function ls(virtualFiles) {
+    return Object.keys(virtualFiles).join('  ');
 } 

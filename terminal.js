@@ -1,5 +1,8 @@
 import { ls } from './ls.js';
 import { cat } from './cat.js';
+import { pour } from './pour.js';
+import { measure } from './measure.js';
+import { empty } from './empty.js';
 
 const jugLimits = { three: 3000, five: 5000 };
 const virtualFiles = {
@@ -145,16 +148,22 @@ async function showBannerAndWelcome() {
 
 function processCommand(cmd) {
     let output = '';
-    // Usage for 'pour' and 'measure' with no args
+    // Usage for 'pour', 'measure', and 'empty' with no args
     if (cmd === 'pour') {
         output = 'usage: pour water > three\n   or: pour five > three';
-        createLine('$', output, false);
+        createLine('', output, false);
         createLine();
         return;
     }
     if (cmd === 'measure') {
         output = 'usage: measure [file]';
-        createLine('$', output, false);
+        createLine('', output, false);
+        createLine();
+        return;
+    }
+    if (cmd === 'empty') {
+        output = 'usage: empty [three|five]';
+        createLine('', output, false);
         createLine();
         return;
     }
@@ -225,15 +234,40 @@ function processCommand(cmd) {
             output = 'No flag for you... yet!';
             break;
         case 'ls':
-            output = ls();
-            break;
-        case 'cat':
-            if (args in virtualFiles) {
-                output = virtualFiles[args];
-            } else {
-                output = cat(args);
+            output = ls(virtualFiles);
+            if (output) {
+                createLine('', output, false);
             }
-            break;
+            createLine();
+            return;
+        case 'cat':
+            output = cat(args, virtualFiles);
+            if (output) {
+                createLine('', output, false);
+            }
+            createLine();
+            return;
+        case 'pour':
+            output = pour(args, virtualFiles, jugLimits);
+            if (output) {
+                createLine('', output, false);
+            }
+            createLine();
+            return;
+        case 'measure':
+            output = measure(args, virtualFiles);
+            if (output) {
+                createLine('', output, false);
+            }
+            createLine();
+            return;
+        case 'empty':
+            output = empty(args, virtualFiles);
+            if (output) {
+                createLine('', output, false);
+            }
+            createLine();
+            return;
         default:
             output = `Command not found: ${cmd} `;
     }

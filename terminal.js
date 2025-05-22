@@ -6,7 +6,17 @@ import { empty } from './empty.js';
 
 const jugLimits = { three: 3000, five: 5000 };
 const virtualFiles = {
-    'challenge.txt': cat('challenge.txt'),
+    'challenge.txt': `Welcome to the CTF Terminal Challenge!
+
+To get started, try exploring your environment with commands like 'ls' and 'cat'.
+
+---
+
+You find yourself in a room with a bomb and two water jugs. One holds exactly 5 liters, the other 3 liters. The bomb will only be defused if you place exactly 4 liters of water on the scale. You have unlimited water, but no measuring marks except the jugs themselves.
+
+Can you figure out how to measure exactly 4 liters?
+
+(Type 'ls' to see what files are here, and 'cat challenge.txt' to read this message again!)`,
     three: '',
     five: ''
 };
@@ -150,7 +160,7 @@ function processCommand(cmd) {
     let output = '';
     // Usage for 'pour', 'measure', and 'empty' with no args
     if (cmd === 'pour') {
-        output = 'usage: pour water > three\n   or: pour five > three';
+        output = 'usage: pour water\n   pour water > three';
         createLine('', output, false);
         createLine();
         return;
@@ -171,7 +181,7 @@ function processCommand(cmd) {
     if (/^pour\s+water\s*>\s*(three|five)$/.test(cmd)) {
         const target = cmd.match(/^pour\s+water\s*>\s*(three|five)$/)[1];
         const max = jugLimits[target];
-        virtualFiles[target] = 'W'.repeat(max);
+        virtualFiles[target] = '~'.repeat(max);
         createLine();
         return;
     }
@@ -184,13 +194,13 @@ function processCommand(cmd) {
             createLine();
             return;
         } else {
-            const sourceAmount = (virtualFiles[source].match(/W/g) || []).length;
-            const targetAmount = (virtualFiles[target].match(/W/g) || []).length;
+            const sourceAmount = (virtualFiles[source].match(/~/g) || []).length;
+            const targetAmount = (virtualFiles[target].match(/~/g) || []).length;
             const targetMax = jugLimits[target];
             const space = targetMax - targetAmount;
             const toPour = Math.min(space, sourceAmount);
             if (toPour > 0) {
-                virtualFiles[target] += 'W'.repeat(toPour);
+                virtualFiles[target] += '~'.repeat(toPour);
                 virtualFiles[target] = virtualFiles[target].slice(0, targetMax);
                 virtualFiles[source] = virtualFiles[source].slice(0, sourceAmount - toPour);
                 createLine();
@@ -205,7 +215,7 @@ function processCommand(cmd) {
     }
     // Simulate finite water stream
     if (/^pour\s+water$/.test(cmd)) {
-        output = 'W'.repeat(10000);
+        output = '~'.repeat(10000);
         createLine('$', output, false);
         createLine();
         return;

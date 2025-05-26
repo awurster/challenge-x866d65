@@ -15,6 +15,10 @@ export function measure(args, virtualFiles) {
         if (filesToCheck.includes(file)) {
             const count = (virtualFiles[file].match(/~/g) || []).length;
             if (file === 'five' && count === 4000) {
+                // Create the 'four' file if not present
+                if (!('four' in virtualFiles)) {
+                    virtualFiles['four'] = '';
+                }
                 output = `five: 4000 mL\nFLAG: CTF{bullseye-<token>}`;
             } else {
                 output = `${file}: ${count} mL`;

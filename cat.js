@@ -1,3 +1,5 @@
+import { asciiJars } from './pour.js';
+
 export function cat(args, virtualFiles) {
     if (!args) {
         return 'usage: cat [file]';

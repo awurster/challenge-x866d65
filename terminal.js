@@ -150,7 +150,8 @@ async function showBannerAndWelcome() {
     const now = new Date();
     const dateStr = now.toDateString().split(' ').slice(1).join(' ');
     const timeStr = now.toTimeString().split(' ')[0];
-    const loginMsg = `Last login: ${dateStr} ${timeStr} from ${ip}\nWelcome, user. You are logging in from: ${ip}`;
+    const username = getSessionUsername();
+    const loginMsg = `Last login: ${dateStr} ${timeStr} from ${ip}\nWelcome, ${username}. You are logging in from: ${ip}`;
     createLine('', loginMsg, false);
     createLine('$', 'Type "help" to get started.', false);
     createLine();
@@ -294,4 +295,22 @@ function getSessionToken() {
         window._ctf_session_token = [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, '0')).join('');
     }
     return window._ctf_session_token;
+}
+
+// Generate a session username like ColorfulLion25
+function getSessionUsername() {
+    if (!window._ctf_session_username) {
+        const colors = [
+            'Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Silver', 'Golden', 'Aqua', 'Teal', 'Crimson', 'Indigo', 'Violet', 'Amber', 'Emerald', 'Cyan', 'Magenta', 'Lime', 'Coral', 'Azure', 'Ivory', 'Lavender', 'Bronze', 'Scarlet', 'Turquoise', 'Mint', 'Peach', 'Olive', 'Maroon', 'Navy', 'Charcoal', 'Platinum', 'Ruby', 'Sapphire', 'Jade', 'Copper', 'Pearl', 'Onyx', 'Topaz', 'Quartz', 'Opal', 'Slate', 'Rose', 'Sand', 'Moss', 'Sky', 'Snow', 'Shadow', 'Sun', 'Frost'
+        ];
+        const animals = [
+            'Lion', 'Tiger', 'Bear', 'Wolf', 'Fox', 'Eagle', 'Hawk', 'Falcon', 'Panther', 'Leopard', 'Jaguar', 'Cheetah', 'Cougar', 'Lynx', 'Otter', 'Badger', 'Moose', 'Bison', 'Buffalo', 'Horse', 'Stag', 'Ram', 'Goat', 'Sheep', 'Dog', 'Cat', 'Rabbit', 'Hare', 'Swan', 'Crane', 'Heron', 'Dove', 'Raven', 'Crow', 'Owl', 'Shark', 'Whale', 'Dolphin', 'Seal', 'Penguin', 'Lizard', 'Gecko', 'Frog', 'Toad', 'Turtle', 'Hedgehog', 'Bat', 'Mole', 'Squirrel', 'Mouse', 'Rat'
+        ];
+        function pick(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+        const number = Math.floor(Math.random() * 90) + 10; // 10-99
+        window._ctf_session_username = `${pick(colors)}${pick(animals)}${number}`;
+    }
+    return window._ctf_session_username;
 }

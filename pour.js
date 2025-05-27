@@ -1,10 +1,12 @@
+import { USAGE } from './usage.js';
+
 export function pour(args, virtualFiles, jugLimits) {
     const WATER_CHAR = '~';
     // 1 '~' = 1 mL in jug content
     const jugLimitsML = { three: 3000, five: 5000 };
     const jugRows = { three: 3, five: 5 };
     if (!args) {
-        return 'usage: pour water > three\n   or: pour five > three';
+        return USAGE.pour;
     }
     // pour water > three or pour water > five
     const waterMatch = args.match(/^water\s*>\s*(three|five)$/);
@@ -41,7 +43,7 @@ export function pour(args, virtualFiles, jugLimits) {
         // Print 30 full lines of 50 '~' for dramatic effect
         return Array.from({ length: 30 }, () => WATER_CHAR.repeat(50)).join('\n');
     }
-    return 'usage: pour water > three\n   or: pour five > three';
+    return USAGE.pour;
 }
 
 export function asciiJars(virtualFiles, jugLimitsML, jugRows, jugsToShow) {

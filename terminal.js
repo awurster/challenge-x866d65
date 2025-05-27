@@ -3,6 +3,7 @@ import { cat } from './cat.js';
 import { pour } from './pour.js';
 import { measure } from './measure.js';
 import { empty } from './empty.js';
+import { USAGE } from './usage.js';
 
 // Load challenge.txt at runtime
 let challengeText = '';
@@ -169,19 +170,19 @@ function processCommand(cmd) {
     let output = '';
     // Usage for 'pour', 'measure', and 'empty' with no args
     if (cmd === 'pour') {
-        output = 'usage:\tpour [object] [>] [object]\n\tpour water > three';
+        output = USAGE.pour;
         createLine('', output, false);
         createLine();
         return;
     }
     if (cmd === 'measure') {
-        output = 'usage:\tmeasure [object]';
+        output = USAGE.measure;
         createLine('', output, false);
         createLine();
         return;
     }
     if (cmd === 'empty') {
-        output = 'usage:\tempty [object]';
+        output = USAGE.empty;
         createLine('', output, false);
         createLine();
         return;

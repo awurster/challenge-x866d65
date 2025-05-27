@@ -30,7 +30,7 @@ let historyIndex = -1;
 const COMMANDS = ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear'];
 const FILES = ['challenge.txt', 'three', 'five', 'four'];
 
-function createLine(prompt = '$', inputValue = '', isInput = true) {
+function createLine(prompt = '$', inputValue = '', isInput = true, isHtml = false) {
     const line = document.createElement('div');
     line.className = 'terminal-line';
 
@@ -52,7 +52,11 @@ function createLine(prompt = '$', inputValue = '', isInput = true) {
     } else {
         const output = document.createElement('span');
         output.className = 'terminal-output';
-        output.textContent = inputValue;
+        if (isHtml) {
+            output.innerHTML = inputValue;
+        } else {
+            output.textContent = inputValue;
+        }
         line.appendChild(output);
         // Always add a clean empty line after output
         const spacer = document.createElement('div');
@@ -140,11 +144,7 @@ function handleInput(e) {
 async function showBannerAndWelcome() {
     // Small ASCII Art Banner (Aquarius/waves)
     const banner =
-        `   ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-    ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-
-   Water Jug Escape Room
-`;
+        `\t~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~\n\t\tWater Jug Escape Room\n\t~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~\n\n`;
     createLine('', banner, false);
     // Fetch IP
     let ip = '127.0.0.1';
@@ -160,8 +160,8 @@ async function showBannerAndWelcome() {
     const dateStr = now.toDateString().split(' ').slice(1).join(' ');
     const timeStr = now.toTimeString().split(' ')[0];
     const username = getSessionUsername();
-    const loginMsg = `Last login: ${dateStr} ${timeStr} from ${ip}\nWelcome, ${username}. You are logging in from: ${ip}`;
-    createLine('', loginMsg, false);
+    const loginMsg = `Last login: ${dateStr} ${timeStr} from ${ip}\nWelcome, <span class="banner-highlight">${username}</span>. You are logging in from: <span class="banner-highlight">${ip}</span>`;
+    createLine('', loginMsg, false, true);
     createLine('$', 'Type "help" to get started.', false);
     createLine();
 }

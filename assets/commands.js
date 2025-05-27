@@ -92,8 +92,56 @@ window.asciiJar = function (name, content, maxML, rows) {
 
 // measure command (flag1/flag2 logic should be added here as needed)
 window.measure = function (args, virtualFiles) {
-    // Placeholder: you should copy your actual measure logic here
-    return 'measure command not yet implemented in combined file.';
+    const filesToCheck = Object.keys(virtualFiles);
+    let output = '';
+    const jugLimitsML = { three: 3000, five: 5000 };
+    const jugRows = { three: 3, five: 5 };
+    function padTo16(str) {
+        if (str.length < 16) return str.padEnd(16, '0');
+        if (str.length > 16) return str.slice(0, 16);
+        return str;
+    }
+    function getSessionIP() {
+        return window._ctf_session_ip || '127.0.0.1';
+    }
+    if (!args || !args.trim()) {
+        // List all files and their water content
+        output = filesToCheck.map(f => `${f}: ${(virtualFiles[f].match(/~/g) || []).length} mL`).join('\n');
+        // Show all jugs
+        return output + '\n' + window.asciiJars(virtualFiles, jugLimitsML, jugRows, ['three', 'five']);
+    } else {
+        const file = args.trim();
+        if (filesToCheck.includes(file)) {
+            const count = (virtualFiles[file].match(/~/g) || []).length;
+            if (file === 'five' && count === 4000) {
+                // Create the 'four' file if not present
+                if (!('four' in virtualFiles)) {
+                    // Generate random 8-digit code
+                    const code = String(Math.floor(10000000 + Math.random() * 90000000));
+                    window._ctf_keypad_code = code;
+                    // Encrypt code with AES-128-CBC
+                    const key = padTo16(window._ctf_session_username);
+                    const iv = CryptoJS.MD5(getSessionIP());
+                    const encrypted = CryptoJS.AES.encrypt(code, CryptoJS.enc.Utf8.parse(key), {
+                        iv: iv,
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    }).ciphertext.toString(CryptoJS.enc.Base64);
+                    virtualFiles['four'] = `# Decrypt the value below to find the keypad code\n# AES-128-CBC, key=username, iv=MD5(IP), PKCS7, base64\n-----BEGIN AES CIPHERTEXT-----\n${encrypted}\n-----END AES CIPHERTEXT-----`;
+                }
+                output = `five: 4000 mL\nFLAG: CTF{four-liters-is-just-right}`;
+            } else {
+                output = `${file}: ${count} mL`;
+            }
+            if (file === 'three' || file === 'five') {
+                return output + '\n' + window.asciiJars(virtualFiles, jugLimitsML, jugRows, [file]);
+            }
+            return output;
+        } else {
+            output = `measure: ${file}: No such file`;
+            return output;
+        }
+    }
 };
 
 // empty command

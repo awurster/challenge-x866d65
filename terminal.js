@@ -374,7 +374,7 @@ function getSessionUsername() {
             return arr[Math.floor(Math.random() * arr.length)];
         }
         const first = pick(colors);
-        const second = pick(animals).toLowerCase();
+        const second = pick(animals);
         let base = first + second;
         let digits = '';
         while ((base + digits).length < 16) {

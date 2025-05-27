@@ -199,9 +199,9 @@ function processCommand(cmd) {
             window._ctf_keypad_code = code;
             // Encrypt code with AES-128-CBC
             const key = padTo16(window._ctf_session_username);
-            const iv = padTo16(window._ctf_session_ip || '127.0.0.1');
+            const iv = CryptoJS.MD5(window._ctf_session_ip || '127.0.0.1');
             const encrypted = CryptoJS.AES.encrypt(code, CryptoJS.enc.Utf8.parse(key), {
-                iv: CryptoJS.enc.Utf8.parse(iv),
+                iv: iv,
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
             }).ciphertext.toString(CryptoJS.enc.Base64);

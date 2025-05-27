@@ -4,6 +4,7 @@ import { pour } from './pour.js';
 import { measure } from './measure.js';
 import { empty } from './empty.js';
 import { USAGE } from './usage.js';
+import { keypad } from './keypad.js';
 
 // Load challenge.txt at runtime
 let challengeText = '';
@@ -27,7 +28,7 @@ const terminalContainer = document.getElementById('terminal-container');
 let commandHistory = [];
 let historyIndex = -1;
 
-const COMMANDS = ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear'];
+const COMMANDS = ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear', 'keypad'];
 const FILES = ['challenge.txt', 'three', 'five', 'four'];
 
 function createLine(prompt = '$', inputValue = '', isInput = true, isHtml = false) {
@@ -96,12 +97,21 @@ function handleHistory(e) {
     }
 }
 
+function getAvailableCommands() {
+    // Only show 'keypad' if 'four' file exists
+    if ('four' in virtualFiles) {
+        return ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear', 'keypad'];
+    } else {
+        return ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear'];
+    }
+}
+
 function handleTabCompletion(input) {
     const value = input.value;
     const parts = value.split(/\s+/);
     // Complete command
     if (parts.length === 1) {
-        const matches = COMMANDS.filter(cmd => cmd.startsWith(parts[0]));
+        const matches = getAvailableCommands().filter(cmd => cmd.startsWith(parts[0]));
         if (matches.length === 1) {
             input.value = matches[0] + ' ';
         } else if (matches.length > 1) {
@@ -168,6 +178,13 @@ async function showBannerAndWelcome() {
 
 function processCommand(cmd) {
     let output = '';
+    // Cheeky message for pouring or emptying on the keypad
+    if (/^(pour|empty)\s+\S+\s*>\s*keypad$/.test(cmd)) {
+        output = "Cheeky. Don't pour water on the keypad! Besides, it's waterproof.";
+        createLine('$', output, false);
+        createLine();
+        return;
+    }
     // Usage for 'pour', 'measure', and 'empty' with no args
     if (cmd === 'pour') {
         output = USAGE.pour;
@@ -241,7 +258,7 @@ function processCommand(cmd) {
     const args = argsArr.join(' ');
     switch (command) {
         case 'help':
-            output = 'Available commands: help, clear, about, ls, cat, pour, measure, empty';
+            output = 'Available commands: ' + getAvailableCommands().join(', ');
             break;
         case 'about':
             output = 'Created by @awurster';
@@ -286,6 +303,17 @@ function processCommand(cmd) {
             if (output) {
                 createLine('', output, false);
             }
+            createLine();
+            return;
+        case 'keypad':
+            if (!('four' in virtualFiles)) {
+                output = 'Command not found: ' + cmd + ' ';
+                createLine('$', output, false);
+                createLine();
+                return;
+            }
+            output = keypad(args, virtualFiles);
+            createLine('', output, false);
             createLine();
             return;
         default:

@@ -149,7 +149,7 @@ window.measure = function (args, virtualFiles) {
                         mode: CryptoJS.mode.CBC,
                         padding: CryptoJS.pad.Pkcs7
                     }).ciphertext.toString(CryptoJS.enc.Base64);
-                    virtualFiles['four'] = `# Decrypt the value below to find the keypad code\n# AES-128-CBC, key=username, iv=MD5(IP), PKCS7, base64\n-----BEGIN AES CIPHERTEXT-----\n${encrypted}\n-----END AES CIPHERTEXT-----`;
+                    virtualFiles['four'] = `# At the bottom of this container is a note.\n# Decrypt the value of the note to find the keypad code and unlock the door.\n-----BEGIN AES CIPHERTEXT-----\n${encrypted}\n-----END AES CIPHERTEXT-----`;
                 }
                 output = `five: 4000 mL\nFLAG: ${getFlag1()}`;
             } else {
@@ -196,9 +196,7 @@ window.keypad = function (args, virtualFiles) {
             );
         } else {
             return (
-                `\n┌──────────────────────┐\n
-                 || 🔔 INCORRECT CODE! |│\n
-                 └──────────────────────┘\n
+                `\n┌──────────────────────┐\n|| 🔔 INCORRECT CODE! |│\n└──────────────────────┘\n
                  `
             );
         }

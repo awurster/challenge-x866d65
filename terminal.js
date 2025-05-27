@@ -1,11 +1,3 @@
-import { ls } from './ls.js';
-import { cat } from './cat.js';
-import { pour } from './pour.js';
-import { measure } from './measure.js';
-import { empty } from './empty.js';
-import { USAGE } from './usage.js';
-import { keypad } from './keypad.js';
-
 // Load challenge.txt at runtime
 let challengeText = '';
 fetch('challenge.txt')

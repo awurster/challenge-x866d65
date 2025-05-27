@@ -196,7 +196,10 @@ window.keypad = function (args, virtualFiles) {
             );
         } else {
             return (
-                `┌────────────────────┐\n│   🔔 INCORRECT CODE! │\n└────────────────────┘`
+                `\n┌──────────────────────┐\n
+                 || 🔔 INCORRECT CODE! |│\n
+                 └──────────────────────┘\n
+                 `
             );
         }
     }

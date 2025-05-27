@@ -2,7 +2,7 @@ import { asciiJars } from './pour.js';
 
 export function cat(args, virtualFiles) {
     if (!args) {
-        return 'usage: cat [file]';
+        return 'usage:\tcat [file]';
     }
     const file = args.trim();
     if (file in virtualFiles) {

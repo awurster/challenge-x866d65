@@ -10,6 +10,28 @@ window.USAGE = {
     keypad: 'usage:\tkeypad <code>'
 };
 
+// Helper functions for flag1 obfuscation
+function rot13(str) {
+    return str.replace(/[a-zA-Z]/g, function (c) {
+        return String.fromCharCode(
+            (c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26
+        );
+    });
+}
+function base64Decode(str) {
+    if (typeof atob !== 'undefined') {
+        return atob(str);
+    } else {
+        return Buffer.from(str, 'base64').toString('binary');
+    }
+}
+function getFlag1() {
+    // ROT13 then base64 of the flag
+    const b64 = 'PGS{sbhg-yvgref-vf-whfg-evtug}';
+    const rot = base64Decode(b64);
+    return rot13(rot);
+}
+
 // ls command
 window.ls = function (virtualFiles) {
     return Object.keys(virtualFiles).join('  ');
@@ -129,7 +151,7 @@ window.measure = function (args, virtualFiles) {
                     }).ciphertext.toString(CryptoJS.enc.Base64);
                     virtualFiles['four'] = `# Decrypt the value below to find the keypad code\n# AES-128-CBC, key=username, iv=MD5(IP), PKCS7, base64\n-----BEGIN AES CIPHERTEXT-----\n${encrypted}\n-----END AES CIPHERTEXT-----`;
                 }
-                output = `five: 4000 mL\nFLAG: CTF{four-liters-is-just-right}`;
+                output = `five: 4000 mL\nFLAG: ${getFlag1()}`;
             } else {
                 output = `${file}: ${count} mL`;
             }
@@ -174,7 +196,7 @@ window.keypad = function (args, virtualFiles) {
             );
         } else {
             return (
-                `┌───────────────┐\n│   🔔 INCORRECT CODE! │\n└───────────────┘`
+                `┌────────────────────┐\n│   🔔 INCORRECT CODE! │\n└────────────────────┘`
             );
         }
     }

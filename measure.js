@@ -1,4 +1,5 @@
 import { asciiJars } from './pour.js';
+import { getFlag1 } from './flag1.js';
 
 export function measure(args, virtualFiles) {
     const filesToCheck = Object.keys(virtualFiles);
@@ -19,7 +20,7 @@ export function measure(args, virtualFiles) {
                 if (!('four' in virtualFiles)) {
                     virtualFiles['four'] = '';
                 }
-                output = `five: 4000 mL\nFLAG: CTF{bullseye-<token>}`;
+                output = `five: 4000 mL\nFLAG: ${getFlag1()}`;
             } else {
                 output = `${file}: ${count} mL`;
             }

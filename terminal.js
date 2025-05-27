@@ -4,22 +4,22 @@ import { pour } from './pour.js';
 import { measure } from './measure.js';
 import { empty } from './empty.js';
 
+// Load challenge.txt at runtime
+let challengeText = '';
+fetch('challenge.txt')
+    .then(res => res.text())
+    .then(text => { challengeText = text; })
+    .catch(() => { challengeText = 'Could not load challenge.txt'; });
+
 const jugLimits = { three: 3000, five: 5000 };
 const virtualFiles = {
-    'challenge.txt': `Welcome to the CTF Terminal Challenge!
-
-To get started, try exploring your environment with commands like 'ls' and 'cat'.
-
----
-
-You find yourself in a room with a bomb and two water jugs. One holds exactly 5 liters, the other 3 liters. The bomb will only be defused if you place exactly 4 liters of water on the scale. You have unlimited water, but no measuring marks except the jugs themselves.
-
-Can you figure out how to measure exactly 4 liters?
-
-(Type 'ls' to see what files are here, and 'cat challenge.txt' to read this message again!)`,
+    'challenge.txt': '', // will be set after fetch
     three: '',
     five: ''
 };
+
+// After fetch, set the virtual file
+setTimeout(() => { virtualFiles['challenge.txt'] = challengeText; }, 100);
 
 const terminalContainer = document.getElementById('terminal-container');
 
@@ -53,6 +53,14 @@ function createLine(prompt = '$', inputValue = '', isInput = true) {
         output.className = 'terminal-output';
         output.textContent = inputValue;
         line.appendChild(output);
+        // Always add a clean empty line after output
+        const spacer = document.createElement('div');
+        spacer.className = 'terminal-line';
+        spacer.innerHTML = '&nbsp;';
+        terminalContainer.appendChild(line);
+        terminalContainer.appendChild(spacer);
+        terminalContainer.scrollTop = terminalContainer.scrollHeight;
+        return;
     }
     terminalContainer.appendChild(line);
     terminalContainer.scrollTop = terminalContainer.scrollHeight;
@@ -134,7 +142,7 @@ async function showBannerAndWelcome() {
         `   ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
     ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
-   The Water Jug Problem
+   Water Jug Escape Room
 `;
     createLine('', banner, false);
     // Fetch IP
@@ -161,19 +169,19 @@ function processCommand(cmd) {
     let output = '';
     // Usage for 'pour', 'measure', and 'empty' with no args
     if (cmd === 'pour') {
-        output = 'usage: pour water\n   pour water > three';
+        output = 'usage:\tpour [object] [>] [object]\n\tpour water > three';
         createLine('', output, false);
         createLine();
         return;
     }
     if (cmd === 'measure') {
-        output = 'usage: measure [file]';
+        output = 'usage:\tmeasure [object]';
         createLine('', output, false);
         createLine();
         return;
     }
     if (cmd === 'empty') {
-        output = 'usage: empty [three|five]';
+        output = 'usage:\tempty [object]';
         createLine('', output, false);
         createLine();
         return;
@@ -235,7 +243,7 @@ function processCommand(cmd) {
             output = 'Available commands: help, clear, about, ls, cat, pour, measure, empty';
             break;
         case 'about':
-            output = 'Welcome to the CTF Terminal Challenge!';
+            output = 'Created by @awurster';
             break;
         case 'clear':
             terminalContainer.innerHTML = '';

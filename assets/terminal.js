@@ -93,9 +93,9 @@ function handleHistory(e) {
 }
 
 function getAvailableCommands() {
-    // Only show 'keypad' if 'four' file exists
+    // Show 'keypad' and 'hint' if 'four' file exists
     if ('four' in virtualFiles) {
-        return ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear', 'keypad'];
+        return ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear', 'keypad', 'hint'];
     } else {
         return ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear'];
     }
@@ -197,7 +197,7 @@ function processCommand(cmd) {
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
             }).ciphertext.toString(CryptoJS.enc.Base64);
-            virtualFiles['four'] = `# Decrypt the value below to find the keypad code\n${encrypted}`;
+            virtualFiles['four'] = `Inside the container is a note:\n\n# Decrypt the value of the note to find the keypad code and unlock the door.\n-----BEGIN AES CIPHERTEXT-----\n${encrypted}\n-----END AES CIPHERTEXT-----`;
         }
         output = 'Bypass complete. The four file and keypad code are set.';
         createLine('$', output, false);
@@ -333,6 +333,15 @@ function processCommand(cmd) {
             }
             output = keypad(args, virtualFiles);
             createLine('', output, false);
+            createLine();
+            return;
+        case 'hint':
+            if (!('four' in virtualFiles)) {
+                output = 'Command not found: ' + cmd + ' ';
+            } else {
+                output = 'Hint: You will definitely need a Username and Session ID to decrypt the keypad code.';
+            }
+            createLine('$', output, false);
             createLine();
             return;
         default:

@@ -210,11 +210,4 @@ window.bypass = function (virtualFiles) {
     virtualFiles['three'] = '';
     // Call measure('five', virtualFiles) to trigger the real logic
     window.measure('five', virtualFiles);
-};
-
-window.hint = function (args, virtualFiles) {
-    if (!('four' in virtualFiles)) {
-        return 'Command not found: hint';
-    }
-    return "To decrypt this file, you'll definitely need a Username and Session ID.";
 }; 

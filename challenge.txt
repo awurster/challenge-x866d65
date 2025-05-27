@@ -1,11 +1,16 @@
-Welcome to the CTF Terminal Challenge!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Water Jug Escape Room
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To get started, try exploring your environment with commands like 'ls' and 'cat'.
+You find yourself trapped in a room with a water tap, two water jugs and a scale.
+
+One jug holds exactly 5 liters, the other 3 liters. If you manage to place exactly 4 liters of water on the scale, you'll reveal the first flag.
+
+The tap supplies unlimited water, but no measuring marks except the jugs themselves.
+
+Figure out how to measure exactly 4 liters to reveal the first flag.
+
+You can only escape the room if you enter the correct passcode on the keypad by the door.
 
 ---
-
-You find yourself trapped in a room with a bomb and two water jugs. 
-
-One holds exactly 5 liters, the other 3 liters. The bomb will only be defused if you place exactly 4 liters of water on the scale. You have unlimited water, but no measuring marks except the jugs themselves.
-
-Can you figure out how to measure exactly 4 liters?
+To get started, try exploring your environment with commands like 'ls' and 'cat'.

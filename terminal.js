@@ -31,6 +31,9 @@ let historyIndex = -1;
 const COMMANDS = ['pour', 'measure', 'cat', 'ls', 'empty', 'help', 'about', 'clear', 'keypad'];
 const FILES = ['challenge.txt', 'three', 'five', 'four'];
 
+// Detect dev mode (localhost or 127.0.0.1)
+const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
 function createLine(prompt = '$', inputValue = '', isInput = true, isHtml = false) {
     const line = document.createElement('div');
     line.className = 'terminal-line';
@@ -165,12 +168,15 @@ async function showBannerAndWelcome() {
     } catch (e) {
         // fallback to localhost
     }
+    window._ctf_session_ip = ip;
+    // Compute session ID as MD5 of IP
+    const sessionId = CryptoJS.MD5(ip).toString(CryptoJS.enc.Hex);
     // Realistic login message
     const now = new Date();
     const dateStr = now.toDateString().split(' ').slice(1).join(' ');
     const timeStr = now.toTimeString().split(' ')[0];
     const username = getSessionUsername();
-    const loginMsg = `Last login: ${dateStr} ${timeStr} from ${ip}\nWelcome, <span class="banner-highlight">${username}</span>. You are logging in from: <span class="banner-highlight">${ip}</span>`;
+    const loginMsg = `Last login: ${dateStr} ${timeStr} from <span class="banner-highlight">${ip}</span>\nWelcome, <span class="banner-highlight">${username}</span>. Your session ID is: <span class="banner-highlight">${sessionId}</span>`;
     createLine('', loginMsg, false, true);
     createLine('$', 'Type "help" to get started.', false);
     createLine();
@@ -181,6 +187,27 @@ function processCommand(cmd) {
     // Cheeky message for pouring or emptying on the keypad
     if (/^(pour|empty)\s+\S+\s*>\s*keypad$/.test(cmd)) {
         output = "Cheeky. Don't pour water on the keypad! Besides, it's waterproof.";
+        createLine('$', output, false);
+        createLine();
+        return;
+    }
+    // Dev-only bypass command
+    if (isDev && cmd === 'bypass') {
+        if (!('four' in virtualFiles)) {
+            // Generate random 8-digit code
+            const code = String(Math.floor(10000000 + Math.random() * 90000000));
+            window._ctf_keypad_code = code;
+            // Encrypt code with AES-128-CBC
+            const key = padTo16(window._ctf_session_username);
+            const iv = padTo16(window._ctf_session_ip || '127.0.0.1');
+            const encrypted = CryptoJS.AES.encrypt(code, CryptoJS.enc.Utf8.parse(key), {
+                iv: CryptoJS.enc.Utf8.parse(iv),
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            }).ciphertext.toString(CryptoJS.enc.Base64);
+            virtualFiles['four'] = `# Decrypt the value below to find the keypad code\n${encrypted}`;
+        }
+        output = 'Bypass complete. The four file and keypad code are set.';
         createLine('$', output, false);
         createLine();
         return;
@@ -346,8 +373,20 @@ function getSessionUsername() {
         function pick(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
-        const number = Math.floor(Math.random() * 90) + 10; // 10-99
-        window._ctf_session_username = `${pick(colors)}${pick(animals)}${number}`;
+        const first = pick(colors);
+        const second = pick(animals).toLowerCase();
+        let base = first + second;
+        let digits = '';
+        while ((base + digits).length < 16) {
+            digits += Math.floor(Math.random() * 10);
+        }
+        let uname = (base + digits).slice(0, 16);
+        window._ctf_session_username = uname;
     }
     return window._ctf_session_username;
+}
+
+function padTo16(str) {
+    const pad = '0000000000000000';
+    return (str + pad).slice(0, 16);
 }

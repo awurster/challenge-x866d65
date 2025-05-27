@@ -26,7 +26,8 @@ function base64Decode(str) {
     }
 }
 function getFlag1() {
-    const b64 = 'PGS{sbhg-yvgref-vf-whfg-evtug}';
+    // ROT13 then base64 of the flag
+    const b64 = 'UEdTe3NiaGUteXZncmVmLXZmLXdoZy1yYWJodHV9';
     const rot = base64Decode(b64);
     return rot13(rot);
 }
@@ -200,4 +201,20 @@ window.keypad = function (args, virtualFiles) {
             );
         }
     }
+};
+
+// Add or update the dev-only bypass command
+window.bypass = function (virtualFiles) {
+    // Set the five jug to 4000 mL and three jug to empty
+    virtualFiles['five'] = '~'.repeat(4000);
+    virtualFiles['three'] = '';
+    // Call measure('five', virtualFiles) to trigger the real logic
+    window.measure('five', virtualFiles);
+};
+
+window.hint = function (args, virtualFiles) {
+    if (!('four' in virtualFiles)) {
+        return 'Command not found: hint';
+    }
+    return "To decrypt this file, you'll definitely need a Username and Session ID.";
 }; 

@@ -10,7 +10,7 @@ window.USAGE = {
     keypad: 'usage:\tkeypad <code>'
 };
 
-// Helper functions for flag1 obfuscation
+// ...
 function rot13(str) {
     return str.replace(/[a-zA-Z]/g, function (c) {
         return String.fromCharCode(
@@ -26,7 +26,6 @@ function base64Decode(str) {
     }
 }
 function getFlag1() {
-    // ROT13 then base64 of the flag
     const b64 = 'PGS{sbhg-yvgref-vf-whfg-evtug}';
     const rot = base64Decode(b64);
     return rot13(rot);
